@@ -11,7 +11,7 @@ from src.utils.tools import Tools as T
 
 def read_single_data_file(path):
     try:
-        return open(path).read().strip().split('\n')
+        return open(path,errors='replace').read().strip().split('\n')
     except FileNotFoundError:
         T.trace("error: '" + path + "' file not found", ex=1)
 
