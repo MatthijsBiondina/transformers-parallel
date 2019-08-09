@@ -66,11 +66,35 @@ def translate_sentence(src, model, opt, SRC, TRG):
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_outputs = model.encoder(src, src_mask)
     out = torch.full((1, opt.max_strlen), opt.trg_pad).long().to(opt.device)
-    T.pyout(src.shape, e_outputs.shape, out.shape)
+    out[:, 0] = TRG.vocab.stoi['<sos>']
+    for ii in range(opt.max_strlen):
+        out_mask = (out != TRG.vocab.stoi['<pad>'])
+        out_ = model.out(model.decoder(
+            out, e_outputs, src_mask, out_mask.unsqueeze(-2)))
+        _, out_ = out_.max(-1)
+        out_[1 - out_mask] = TRG.vocab.stoi['<pad>']
+        out_old = out.clone()
+        out[:, 1:] = out_[:, :-1]
+        try:
+            length = (out[0] == TRG.vocab.stoi['<eos>']).nonzero()[0]
+            out[:, length:] = TRG.vocab.stoi['<pad>']
+        except IndexError:
+            pass
+        if torch.eq(out, out_old):
+            break
 
-    T.trace("exit", ex=0)
-    return multiple_replace({' ?': '?', ' !': '!', ' .': '.', '\' ': '\'',
-                             ' ,': ','}, sentence)
+    try:
+        length = (out[0] == TRG.vocab.stoi['<eos']).nonzero()[0]
+    except IndexError:
+        length = len(out[0])
+    finally:
+        return ' '.join(
+            [TRG.vocab.itos[tok] for tok in out[0][1:length]])
+    # T.pyout(src.shape, e_outputs.shape, out.shape)
+
+    # T.trace("exit", ex=0)
+    # return multiple_replace({' ?': '?', ' !': '!', ' .': '.', '\' ': '\'',
+    #                          ' ,': ','}, sentence)
 
 
 def translate_preprocessed(sentence, model, opt, SRC, TRG):
