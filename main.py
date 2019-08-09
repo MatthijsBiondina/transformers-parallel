@@ -41,7 +41,7 @@ def test():
 
 
 def main():
-    opt = Opt('./res/data/tutor', ('english', 'en'), ('french', 'fr'))
+    opt = Opt('./res/data/reduced', ('english', 'en'), ('french', 'fr'))
     # opt.load_weights = './res/weights'
     opt.checkpoint = 60
     opt.printevery = 1
