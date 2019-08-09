@@ -28,22 +28,31 @@ def multiple_replace(dict, text):
     return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
 
+def debug(src, trg, out, SRC, TRG):
+    src = src.cpu().numpy()
+    trg = trg.cpu().numpy()
+    out = out.cpu().numpy()
+    s_phrase, t_phrase, o_phrase = [], [], []
+    for s, t, o in zip(src, trg, out):
+        s_phrase.append(' '.join([SRC.vocab.itos[tok] for tok in s]))
+        t_phrase.append(' '.join([TRG.vocab.itos[tok] for tok in t]))
+        o_phrase.append(' '.join([TRG.vocab.itos[tok] for tok in o]))
+    ml_s = max(len(s) for s in s_phrase)
+    ml_t = max(len(t) for t in t_phrase)
+    ml_o = max(len(o) for o in o_phrase)
+    for s, t, o in zip(s_phrase, t_phrase, o_phrase):
+        T.pyout(s, ' ' * (ml_s - len(s)), ' | ',
+                t, ' ' * (ml_t - len(t)), ' | ',
+                o, ' ' * (ml_o - len(o)))
+
+
 def translate_batch(src, trg, model, opt, SRC, TRG):
     model.eval()
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_output = model.encoder(src, src_mask)
-    outputs = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
+    out = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
 
-    src = src.cpu().numpy()
-    trg = trg.cpu().numpy()
-    s_phrase, t_phrase = [], []
-    for s, t in zip(src, trg):
-        s_phrase.append(' '.join([SRC.vocab.itos[tok] for tok in s]))
-        t_phrase.append(' '.join([TRG.vocab.itos[tok] for tok in t]))
-    maxlen = max(len(s) for s in s_phrase)
-    for s, t in zip(s_phrase, t_phrase):
-        T.pyout(s, ' ' * (maxlen - len(s)), ' | ', t)
-    T.pyout(outputs.shape)
+    debug(src, trg, out, SRC, TRG)
     model.train()
 
 
