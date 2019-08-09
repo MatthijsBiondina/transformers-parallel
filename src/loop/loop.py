@@ -30,8 +30,11 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         # DO PEAK
         prd_input = prd[:, :-1]
         prd_mask = (prd_input != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
+        prd_mask = torch.cat((prd_mask,) * prd_input.shape[-1], -2)
         T.pyout(src.shape, prd_input.shape, src_mask.shape, prd_mask.shape)
         dp_preds = model(src, prd_input, src_mask, prd_mask)
+
+        T.trace("exit", ex=0)
 
         # CALCULATE LOSS
         ys = trg[:, 1:].contiguous().view(-1)
