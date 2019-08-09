@@ -29,6 +29,10 @@ def multiple_replace(dict, text):
 
 
 def translate_batch(src, trg, model, opt, SRC, TRG):
+    model.eval()
+    src_mask = (src != SRC.vocab.stoi['<pad>'].unsqueeze(-2))
+    e_output = model.encoder(src, src_mask)
+
     src = src.cpu().numpy()
     trg = trg.cpu().numpy()
     s_phrase, t_phrase = [], []
@@ -38,6 +42,8 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     maxlen = max(len(s) for s in s_phrase)
     for s, t in zip(s_phrase, t_phrase):
         T.pyout(s, ' ' * (maxlen - len(s)), ' | ', t)
+    T.pyout(e_output.shape)
+    model.train()
 
 
 def translate_sentence(sentence, model, opt, SRC, TRG):
