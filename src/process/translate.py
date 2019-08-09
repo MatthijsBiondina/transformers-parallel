@@ -30,7 +30,7 @@ def multiple_replace(dict, text):
 
 def translate_batch(src, trg, model, opt, SRC, TRG):
     model.eval()
-    src_mask = (src != SRC.vocab.stoi['<pad>'].unsqueeze(-2))
+    src_mask = (src != SRC.vocab.stoi['<pad>']).unsqueeze(-2)
     e_output = model.encoder(src, src_mask)
 
     src = src.cpu().numpy()
