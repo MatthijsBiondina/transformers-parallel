@@ -80,7 +80,8 @@ def translate_sentence(src, model, opt, SRC, TRG):
             out[:, length:] = TRG.vocab.stoi['<pad>']
         except IndexError:
             pass
-        T.trace(torch.eq(out, out_old), ex=0)
+        T.trace(torch.eq(out, out_old))
+        T.trace(torch.sum(1 - torch.eq(out, out_old)), ex=0)
         if torch.eq(out, out_old):
             break
 
