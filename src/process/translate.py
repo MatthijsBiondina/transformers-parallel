@@ -51,6 +51,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_output = model.encoder(src, src_mask)
     out = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
+    out[:, 0] = TRG.vocab.stoi['<sos>']
 
     debug(src, trg, out, SRC, TRG)
     model.train()
