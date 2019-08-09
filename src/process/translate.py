@@ -34,7 +34,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     for s, t in zip(src, trg):
         T.pyout(
             ' '.join([SRC.vocab.itos[tok] for tok in s]),
-            ' > ',
+            '\t> ',
             ' '.join([TRG.vocab.itos[tok] for tok in t]))
     # T.pyout(src.shape)
 
