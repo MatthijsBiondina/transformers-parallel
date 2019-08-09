@@ -151,6 +151,8 @@ def main():
 
 
 if __name__ == '__main__':
-    print(read_single_data_file('./res/data/europarl/train/english.txt'))
+    en = read_single_data_file('./res/data/europarl/train/english.txt')
+    fr = read_single_data_file('./res/data/europarl/train/french.txt')
+    print(len(en), len(fr))
     # main()
     # T.pyout("SUCH WOW, MUCH SUCCES!")
