@@ -65,7 +65,8 @@ def translate_sentence(src, model, opt, SRC, TRG):
     model.eval()
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_outputs = model.encoder(src, src_mask)
-    T.pyout(src.shape, e_outputs.shape)
+    out = torch.full((1, opt.max_strlen), opt.trg_pad).long().to(opt.device)
+    T.pyout(src.shape, e_outputs.shape, out.shape)
 
     T.trace("exit", ex=0)
     return multiple_replace({' ?': '?', ' !': '!', ' .': '.', '\' ': '\'',
