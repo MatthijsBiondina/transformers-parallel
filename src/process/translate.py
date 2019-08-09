@@ -58,6 +58,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
             out, e_outputs, src_mask, out_mask.unsqueeze(-2)))
         _, out_ = out_.max(-1)
         out_[1 - out_mask] = TRG.vocab.stoi['<pad>']
+        out[:, 1:] = out_[:, :-1]
 
     debug(src, trg, out, SRC, TRG)
     T.pyout(out_.shape, out.shape)
