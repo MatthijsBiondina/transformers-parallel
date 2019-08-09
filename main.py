@@ -46,6 +46,7 @@ def main():
     opt.checkpoint = 60
     opt.printevery = 1
     opt.epochs = 2500
+    opt.batch_size = 10
 
     opt.device = torch.device(
         "cuda:0" if torch.cuda.is_available() else "cpu")
