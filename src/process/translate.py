@@ -32,7 +32,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     model.eval()
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_output = model.encoder(src, src_mask)
-    outputs = torch.full(trg.size, opt.trg_pad).long().to(opt.device)
+    outputs = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
 
     src = src.cpu().numpy()
     trg = trg.cpu().numpy()
