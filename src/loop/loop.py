@@ -24,11 +24,13 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         # NO PEAK
         trg_input = trg[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
+        T.pyout(src.shape, trg_input.shape, src_mask.shape, trg_mask.shape)
         np_preds = model(src, trg_input, src_mask, trg_mask)
 
         # DO PEAK
         prd_input = prd[:, :-1]
         prd_mask = (prd != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
+        T.pyout(src.shape, prd_input.shape, src_mask.shape, prd_mask.shape)
         dp_preds = model(src, prd_input, src_mask, prd_mask)
 
         # CALCULATE LOSS
