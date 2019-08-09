@@ -29,7 +29,10 @@ def multiple_replace(dict, text):
 
 
 def translate_batch(src, trg, model, opt):
-    T.pyout(src.shape)
+    src = src.cpu().numpy()
+    for s in src:
+        T.pyout(s)
+    # T.pyout(src.shape)
 
 
 def translate_sentence(sentence, model, opt, SRC, TRG):

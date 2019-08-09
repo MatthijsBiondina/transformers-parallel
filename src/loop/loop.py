@@ -18,7 +18,8 @@ def train_epoch(model, opt, epoch, start):
                            total=opt.train_len):
         src = batch.src.transpose(0, 1)
         trg = batch.trg.transpose(0, 1)
-        prd = translate_batch(src, trg, model, opt)
+        with torch.no_grad():
+            prd = translate_batch(src, trg, model, opt)
         T.trace("exit", ex=0)
 
         trg_input = trg[:, :-1]
