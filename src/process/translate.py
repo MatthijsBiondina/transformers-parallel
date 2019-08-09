@@ -85,9 +85,12 @@ def translate_sentence(src, model, opt, SRC, TRG):
             break
 
     try:
-        length = (out[0] == TRG.vocab.stoi['<eos']).nonzero()[0]
+        length = (out[0] == TRG.vocab.stoi['<eos>']).nonzero()[0]
     except IndexError:
-        length = len(out[0])
+        try:
+            length = (out[0] == TRG.vocab.stoi['<pad>']).nonzero()[0]
+        except IndexError:
+            length = len(out[0])
     finally:
         return ' '.join(
             [TRG.vocab.itos[tok] for tok in out[0][1:length]])
