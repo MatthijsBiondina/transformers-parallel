@@ -80,6 +80,7 @@ def translate_sentence(src, model, opt, SRC, TRG):
             out[:, length:] = TRG.vocab.stoi['<pad>']
         except IndexError:
             pass
+        T.trace(torch.eq(out, out_old), ex=0)
         if torch.eq(out, out_old):
             break
 
@@ -90,11 +91,6 @@ def translate_sentence(src, model, opt, SRC, TRG):
     finally:
         return ' '.join(
             [TRG.vocab.itos[tok] for tok in out[0][1:length]])
-    # T.pyout(src.shape, e_outputs.shape, out.shape)
-
-    # T.trace("exit", ex=0)
-    # return multiple_replace({' ?': '?', ' !': '!', ' .': '.', '\' ': '\'',
-    #                          ' ,': ','}, sentence)
 
 
 def translate_preprocessed(sentence, model, opt, SRC, TRG):
