@@ -32,8 +32,6 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         prd_mask = torch.cat((prd_mask,) * prd_input.shape[-1], -2)
         dp_preds = model(src, prd_input, src_mask, prd_mask)
 
-        T.trace("exit", ex=0)
-
         # CALCULATE LOSS
         ys = trg[:, 1:].contiguous().view(-1)
         opt.optimizer.zero_grad()
