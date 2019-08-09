@@ -9,7 +9,7 @@ from src.process.translate import translate_preprocessed, translate_batch
 from src.utils.tools import Tools as T
 
 
-def train_epoch(model, opt, epoch, start):
+def train_epoch(model, opt, epoch, start, SRC, TRG):
     model.train()
     total_loss = 0
 
@@ -19,7 +19,7 @@ def train_epoch(model, opt, epoch, start):
         src = batch.src.transpose(0, 1)
         trg = batch.trg.transpose(0, 1)
         with torch.no_grad():
-            prd = translate_batch(src, trg, model, opt)
+            prd = translate_batch(src, trg, model, opt, SRC, TRG)
         T.trace("exit", ex=0)
 
         trg_input = trg[:, :-1]

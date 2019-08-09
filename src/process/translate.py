@@ -28,10 +28,11 @@ def multiple_replace(dict, text):
     return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
 
-def translate_batch(src, trg, model, opt):
+def translate_batch(src, trg, model, opt, SRC, TRG):
     src = src.cpu().numpy()
+    trg = trg.cpu().numpy()
     for s in src:
-        T.pyout(s)
+        T.pyout(' '.join([SRC.vocab.itos[tok] for tok in s]))
     # T.pyout(src.shape)
 
 

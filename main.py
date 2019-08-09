@@ -21,7 +21,7 @@ def train_model(model, opt, SRC, TRG):
         if epoch > c_epoch + 10:
             T.pyout(f"Early stopping after epoch {epoch}")
             break
-        train_loss = train_epoch(model, opt, epoch, start)
+        train_loss = train_epoch(model, opt, epoch, start, SRC, TRG)
         val_loss, c_epoch, c_loss, saved = val_epoch(
             model, opt, epoch, start, c_epoch, c_loss)
         T.pyout(
