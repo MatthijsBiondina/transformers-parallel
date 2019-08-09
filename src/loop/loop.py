@@ -20,15 +20,27 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         trg = batch.trg.transpose(0, 1)
         with torch.no_grad():
             prd = translate_batch(src, trg, model, opt, SRC, TRG)
-        T.trace(prd.shape, ex=0)
 
+        # NO PEAK
         trg_input = trg[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
-        preds = model(src, trg_input, src_mask, trg_mask)
+        np_preds = model(src, trg_input, src_mask, trg_mask)
+
+        # DO PEAK
+        prd_input = prd[:, :-1]
+        prd_mask = (prd != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
+        dp_preds = model(src, prd_input, src_mask, prd_mask)
+
+        # CALCULATE LOSS
         ys = trg[:, 1:].contiguous().view(-1)
         opt.optimizer.zero_grad()
-        loss = F.cross_entropy(
-            preds.view(-1, preds.size(-1)), ys, ignore_index=opt.trg_pad)
+        np_loss = F.cross_entropy(
+            np_preds.view(-1, np_preds.size(-1)), ys, ignore_index=opt.trg_pad)
+        dp_loss = F.cross_entropy(
+            dp_preds.view(-1, dp_preds.size(-1)), ys, ignore_index=opt.trg_pad)
+        loss = np_loss + dp_loss
+
+        # BACKPROP
         loss.backward()
         opt.optimizer.step()
         if opt.SGDR is True:
