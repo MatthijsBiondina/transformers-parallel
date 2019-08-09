@@ -29,7 +29,7 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
 
         # DO PEAK
         prd_input = prd[:, :-1]
-        prd_mask = (prd != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
+        prd_mask = (prd_input != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
         T.pyout(src.shape, prd_input.shape, src_mask.shape, prd_mask.shape)
         dp_preds = model(src, prd_input, src_mask, prd_mask)
 
