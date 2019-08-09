@@ -41,7 +41,7 @@ def test():
 
 
 def main():
-    opt = Opt('./res/data/reduced', ('english', 'en'), ('french', 'fr'))
+    opt = Opt('./res/data/tutor', ('english', 'en'), ('french', 'fr'))
     # opt.load_weights = './res/weights'
     opt.checkpoint = 60
     opt.printevery = 1
@@ -65,8 +65,7 @@ def main():
         opt.sched = CosineWithRestarts(opt.optimizer, T_max=opt.train_len)
 
     if opt.checkpoint > 0:
-        T.pyout("model weights will be saved every %d minutes and at end of "
-                "epoch to directory ./res/weights/" % (opt.checkpoint))
+        T.pyout("model weights will be saved to directory ./res/weights/")
 
     if opt.load_weights is not None and opt.floyd is not None:
         T.makedirs('./res/weights')

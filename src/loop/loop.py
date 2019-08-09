@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import warnings
 
 from src.process.batch import create_masks
-from src.process.translate import translate_preprocessed
+from src.process.translate import translate_preprocessed, translate_batch
 from src.utils.tools import Tools as T
 
 
@@ -18,6 +18,8 @@ def train_epoch(model, opt, epoch, start):
                            total=opt.train_len):
         src = batch.src.transpose(0, 1)
         trg = batch.trg.transpose(0, 1)
+        prd = translate_batch(src, trg, model, opt)
+        T.trace("exit", ex=0)
 
         trg_input = trg[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
