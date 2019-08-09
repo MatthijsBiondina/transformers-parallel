@@ -61,24 +61,9 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     return out
 
 
-def translate_sentence(sentence, model, opt, SRC, TRG):
+def translate_sentence(src, model, opt, SRC, TRG):
     model.eval()
-    indexed = []
-    T.pyout(sentence)
-    sentence = SRC.preprocess(sentence)
-    T.pyout(sentence)
-
-    for tok in sentence:
-        if SRC.vocab.stoi[tok] != 0 or opt.floyd is True:
-            indexed.append(SRC.vocab.stoi[tok])
-        else:
-            indexed.append(get_synonym(tok, SRC))
-    sentence = Variable(torch.LongTensor([indexed]))
-    sentence = sentence.to(opt.device)
-
-    sentence = beam_search(sentence, model, SRC, TRG, opt)
-    T.pyout(sentence)
-    sys.exit(0)
+    T.pyout(src.shape)
 
     return multiple_replace({' ?': '?', ' !': '!', ' .': '.', '\' ': '\'',
                              ' ,': ','}, sentence)
@@ -94,7 +79,7 @@ def translate_preprocessed(sentence, model, opt, SRC, TRG):
     sentence = Variable(torch.LongTensor([indexed]))
     sentence = sentence.to(opt.device)
 
-    sentence = beam_search(sentence, model, SRC, TRG, opt)
+    sentence = translate_sentence(sentence, model, opt, SRC, TRG)
     return sentence.split(' ')
 
 

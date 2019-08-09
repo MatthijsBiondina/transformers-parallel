@@ -17,6 +17,8 @@ def train_model(model, opt, SRC, TRG):
     start = time.time()
     opt.wfill = len(str(opt.epochs + 1))
 
+    bleu = test_epoch(model, opt, SRC, TRG)
+    T.trace(bleu, ex=0)
     for epoch in T.poem(range(opt.epochs), description="training model..."):
         if epoch > c_epoch + 10:
             T.pyout(f"Early stopping after epoch {epoch}")
