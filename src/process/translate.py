@@ -31,12 +31,13 @@ def multiple_replace(dict, text):
 def translate_batch(src, trg, model, opt, SRC, TRG):
     src = src.cpu().numpy()
     trg = trg.cpu().numpy()
+    s_phrase, t_phrase = [], []
     for s, t in zip(src, trg):
-        T.pyout(
-            ' '.join([SRC.vocab.itos[tok] for tok in s]),
-            '\t> ',
-            ' '.join([TRG.vocab.itos[tok] for tok in t]))
-    # T.pyout(src.shape)
+        s_phrase.append(' '.join([SRC.vocab.itos[tok] for tok in s]))
+        t_phrase.append(' '.join([TRG.vocab.itos[tok] for tok in t]))
+    maxlen = max(len(s) for s in s_phrase)
+    for s, t in zip(s_phrase, t_phrase):
+        T.pyout(s, ' ' * (maxlen - len(s)), ' | ', t)
 
 
 def translate_sentence(sentence, model, opt, SRC, TRG):
