@@ -58,7 +58,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
             out, e_outputs, src_mask, out_mask.unsqueeze(-2)))
         _, out_ = out_.max(-1)
 
-        T.pyout(not out_mask)
+        T.pyout(1 - out_mask)
 
     debug(src, trg, out, SRC, TRG)
     T.pyout(out_.shape, out.shape)
