@@ -20,7 +20,7 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         trg = batch.trg.transpose(0, 1)
         with torch.no_grad():
             prd = translate_batch(src, trg, model, opt, SRC, TRG)
-        T.trace("exit", ex=0)
+        T.trace(prd.shape, ex=0)
 
         trg_input = trg[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
