@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from src.models.transformer import get_model
 from src.process.optim import CosineWithRestarts
 from src.process.process import Process as P
+from src.process.process import read_single_data_file
 from src.process.batch import create_masks
 from src.opt.opt_main import Opt
 from src.utils.tools import Tools as T
@@ -150,5 +151,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-    T.pyout("SUCH WOW, MUCH SUCCES!")
+    print(read_single_data_file('./res/data/europarl/train/english.txt'))
+    # main()
+    # T.pyout("SUCH WOW, MUCH SUCCES!")
