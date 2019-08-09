@@ -104,6 +104,7 @@ def translate_preprocessed(sentence, model, opt, SRC, TRG):
     sentence = sentence.to(opt.device)
 
     sentence = translate_sentence(sentence, model, opt, SRC, TRG)
+    T.pyout(sentence)
     return sentence.split(' ')
 
 
