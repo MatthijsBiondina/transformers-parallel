@@ -53,8 +53,9 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
     out = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
     out[:, 0] = TRG.vocab.stoi['<sos>']
     for ii in range(1):  # trg.shape[1]):
-        out_mask = (out != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
-        out_ = model.out(model.decoder(out, e_outputs, src_mask, out_mask))
+        out_mask = (out != TRG.vocab.stoi['<pad>'])
+        out_ = model.out(model.decoder(
+            out, e_outputs, src_mask, out_mask.unsqueeze(-2)))
         _, out_ = out_.max(-1)
         T.pyout(out_mask.shape)
 
