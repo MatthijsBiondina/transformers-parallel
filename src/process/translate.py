@@ -31,8 +31,11 @@ def multiple_replace(dict, text):
 def translate_batch(src, trg, model, opt, SRC, TRG):
     src = src.cpu().numpy()
     trg = trg.cpu().numpy()
-    for s in src:
-        T.pyout(' '.join([SRC.vocab.itos[tok] for tok in s]))
+    for s, t in zip(src, trg):
+        T.pyout(
+            ' '.join([SRC.vocab.itos[tok] for tok in s]),
+            ' > ',
+            ' '.join([TRG.vocab.itos[tok] for tok in t]))
     # T.pyout(src.shape)
 
 

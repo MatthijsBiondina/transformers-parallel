@@ -17,7 +17,7 @@ def create_masks(src, trg, opt):
 
     if trg is not None:
         trg_mask = (trg != opt.trg_pad).unsqueeze(-2)
-        # T.trace(trg_mask, ex=0)
+
         size = trg.size(1)
         np_mask = nopeak_mask(size, opt).to(opt.device)
         trg_mask = trg_mask & np_mask
