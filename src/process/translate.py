@@ -60,6 +60,7 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
         out_[1 - out_mask] = TRG.vocab.stoi['<pad>']
         out[:, 1:] = out_[:, :-1]
     model.train()
+    debug(src, trg, out, SRC, TRG)
     return out
 
 
