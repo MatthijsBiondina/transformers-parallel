@@ -22,7 +22,7 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
             prd = translate_batch(src, trg, model, opt, SRC, TRG)
 
         # NO PEAK
-        trg_input = trg[:, :-1]
+        trg_input = prd[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
         np_preds = model(src, trg_input, src_mask, trg_mask)
 
