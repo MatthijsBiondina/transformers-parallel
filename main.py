@@ -23,7 +23,7 @@ def train_model(model, opt, SRC, TRG):
             break
         train_loss = train_epoch(model, opt, epoch, start, SRC, TRG)
         val_loss, c_epoch, c_loss, saved = val_epoch(
-            model, opt, epoch, start, c_epoch, c_loss)
+            model, opt, epoch, start, c_epoch, c_loss, SRC, TRG)
         T.pyout(
             "%dm: epoch %s%d  |  train loss = %.3f, eval loss = %.3f %s" %
             ((time.time() - start) // 60,

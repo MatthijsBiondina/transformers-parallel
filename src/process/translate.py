@@ -47,7 +47,6 @@ def debug(src, trg, out, SRC, TRG):
 
 
 def translate_batch(src, trg, model, opt, SRC, TRG):
-    model.eval()
     src_mask = (src != opt.src_pad).unsqueeze(-2)
     e_outputs = model.encoder(src, src_mask)
     out = torch.full(trg.shape, opt.trg_pad).long().to(opt.device)
@@ -59,8 +58,6 @@ def translate_batch(src, trg, model, opt, SRC, TRG):
         _, out_ = out_.max(-1)
         out_[1 - out_mask] = TRG.vocab.stoi['<pad>']
         out[:, 1:] = out_[:, :-1]
-    model.train()
-    debug(src, trg, out, SRC, TRG)
     return out
 
 

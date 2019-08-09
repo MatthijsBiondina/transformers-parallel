@@ -24,14 +24,12 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
         # NO PEAK
         trg_input = trg[:, :-1]
         src_mask, trg_mask = create_masks(src, trg_input, opt)
-        T.pyout(src.shape, trg_input.shape, src_mask.shape, trg_mask.shape)
         np_preds = model(src, trg_input, src_mask, trg_mask)
 
         # DO PEAK
         prd_input = prd[:, :-1]
         prd_mask = (prd_input != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
         prd_mask = torch.cat((prd_mask,) * prd_input.shape[-1], -2)
-        T.pyout(src.shape, prd_input.shape, src_mask.shape, prd_mask.shape)
         dp_preds = model(src, prd_input, src_mask, prd_mask)
 
         T.trace("exit", ex=0)
@@ -61,7 +59,7 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
     return total_loss / (i + 1)
 
 
-def val_epoch(model, opt, epoch, start, c_epoch, c_loss):
+def val_epoch(model, opt, epoch, start, c_epoch, c_loss, SRC, TRG):
     model.eval()
     total_loss = 0
     with torch.no_grad():
@@ -70,14 +68,26 @@ def val_epoch(model, opt, epoch, start, c_epoch, c_loss):
                                total=opt.val_len):
             src = batch.src.transpose(0, 1)
             trg = batch.trg.transpose(0, 1)
+            with torch.no_grad():
+                prd = translate_batch(src, trg, model, opt, SRC, TRG)
 
+            # NO PEAK
             trg_input = trg[:, :-1]
             src_mask, trg_mask = create_masks(src, trg_input, opt)
-            preds = model(src, trg_input, src_mask, trg_mask)
+            np_preds = model(src, trg_input, src_mask, trg_mask)
+
+            # DO PEAK
+            prd_input = prd[:, :-1]
+            prd_mask = (prd_input != TRG.vocab.stoi['<pad>']).unsqueeze(-2)
+            prd_mask = torch.cat((prd_mask,) * prd_input.shape[-1], -2)
+            dp_preds = model(src, prd_input, src_mask, prd_mask)
+
             ys = trg[:, 1:].contiguous().view(-1)
-            loss = F.cross_entropy(
-                preds.view(-1, preds.size(-1)), ys, ignore_index=opt.trg_pad)
-            total_loss += loss.item()
+            np_loss = F.cross_entropy(np_preds.view(
+                -1, np_preds.size(-1)), ys, ignore_index=opt.trg_pad)
+            dp_loss = F.cross_entropy(dp_preds.view(
+                -1, dp_preds.size(-1)), ys, ignore_index=opt.trg_pad)
+            total_loss += (np_loss.item() + dp_loss.item())
     avg_loss = total_loss / (i + 1)
 
     saved = False
