@@ -81,7 +81,7 @@ def translate_sentence(src, model, opt, SRC, TRG):
         except IndexError:
             pass
         # check if change
-        if torch.sum(1 - torch.eq(out, out_old)):
+        if torch.sum(1 - torch.eq(out, out_old)) > 0:
             break
 
     try:
