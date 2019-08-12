@@ -49,7 +49,7 @@ def train_epoch(model, opt, epoch, start, SRC, TRG):
                 opt.sched.step()
 
             total_loss += loss.item()
-        except Exception:
+        except FileExistsError:
             pass
 
         # if (opt.checkpoint > 0 and
